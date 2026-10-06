@@ -42,6 +42,7 @@ shellcheck applies only to the `.sh` scripts; the `.fish` files (`config.fish`, 
 - Shell env lives in `configs/fish/config.fish`: PATH (`~/.local/bin`, `~/.bun/bin`), `fnm --use-on-cd`, bun, uv/gum/glow completions, fzf, zoxide (`z`), starship, and a parser for the machine-local bash-syntax `~/.mcp-secrets`.
 - `install.sh` installs fish + zoxide (apt) and starship (userspace `~/.local/bin`), then offers `chsh` to fish. Tolerant of no-sudo / non-interactive runs (warns, never hangs).
 - Terminal: Ghostty 1.3.1 on Ubuntu 26.04.
+- Platform status (2026-10-07): the primary OS is now RHEL 10.2 with Ptyxis. This repository is Ubuntu-only (`install.sh` uses apt; Ghostty is not packaged for RHEL). See README "Platform status" and `000-0-dotfiles/docs/rhel-10-setup.md`.
 - tmux dev session `og-tools` (rooted in `~/Apps/OG-tools`): `claude` window has `claude` left and `fish` right; `codex` window runs `codex`; `agy` window runs `agy`.
 - `dev` is a toggle: outside tmux it attaches (creating the session first if needed); inside tmux it `detach-client`s so the session keeps running in the background. `dev reset` kills the session and rebuilds it fresh.
 - Font picker: `font-picker` fish function (zenity + SIGUSR2 reload).
