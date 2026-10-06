@@ -8,8 +8,8 @@ Uses tmux inside Ghostty for a scripted dev workspace.
 This repository is for **Ubuntu**. It is not the primary setup any more.
 
 - The primary OS is now **RHEL 10.2** with the **Ptyxis** terminal. Ghostty is not packaged for RHEL 10 or EPEL 10, and `scripts/install.sh` uses `apt-get`. Do not run it on RHEL.
-- For RHEL, follow `000-0-dotfiles/docs/rhel-10-setup.md`. For fonts, follow `000-0-dotfiles/docs/nerd-fonts.md`: 10 Nerd Fonts in `~/.local/share/fonts/NerdFonts/`, default `JetBrainsMono Nerd Font Mono`.
-- `000-0-dotfiles` no longer has a Ghostty config (it is documentation only). This repository has the only Ghostty config.
+- For RHEL, follow the owner's computer-setup notes. Fonts: 10 Nerd Fonts in `~/.local/share/fonts/NerdFonts/`, default `JetBrainsMono Nerd Font Mono`.
+- The owner's dotfiles no longer have a Ghostty config. This repository has the only Ghostty config.
 - `font-picker` works only in Ghostty: it reloads Ghostty with `SIGUSR2`. In Ptyxis, use `gsettings set org.gnome.Ptyxis font-name '<name> <size>'`.
 - In a terminal, use a `Nerd Font Mono` name. `configs/ghostty/config` uses `JetBrainsMono Nerd Font` (not Mono), so some icons can be wider than one cell.
 - RHEL package names, if you use parts of this repository on RHEL: `tmux` is in the RHEL repositories (3.3a). `fish` is in EPEL 10. `zoxide` and `starship` are not packaged; use their upstream install scripts.
