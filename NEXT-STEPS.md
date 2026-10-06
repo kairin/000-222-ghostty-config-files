@@ -2,9 +2,12 @@
 
 **Status:** to do. Nothing on this page is done yet.
 **Source:** the architecture review of 2026-10-07. The full plan is in
-`000-0-workspace/docs/alignment-plan-2026-10-07.md` (branch `docs/rhel10-docs-only`
-until 000-0-workspace PR #4 is merged).
-**Task:** T08. **Work branch:** `docs/rhel10-alignment`. **Pull request:** #261.
+`000-0-workspace/docs/alignment-plan-2026-10-07.md`. The index of all
+repositories is `000-0-workspace/docs/next-steps.md`.
+**Task:** T08. **Work branch:** make a new branch from `main`, for example
+`docs/rhel10-followup`, and open a new pull request. The branch names and
+pull-request numbers inside the task text below were merged on 2026-10-07.
+Do not reuse them.
 **Depends on:** nothing. **Needs the owner (user-gated):** no.
 
 When all the steps are done and verified, delete this file in the same pull request.
