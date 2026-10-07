@@ -55,3 +55,10 @@ shellcheck applies only to the `.sh` scripts; the `.fish` files (`config.fish`, 
 - Status bar is intentionally minimal and shows window-switching hints.
 - Pane borders use Catppuccin Mocha surface0 (#313244) and mauve (#cba6f7)
 - Do NOT configure tmux splits inside Ghostty native splits — choose one layer only
+
+## Git identity
+
+Commit as `Mister K <678459+kairin@users.noreply.github.com>`. This is the
+public GitHub name and the GitHub noreply email. Do not commit with another
+name or with a personal email address. Check with `git config user.name` and
+`git config user.email` before you commit.
