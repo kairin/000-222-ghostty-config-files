@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026-10-11] — Flathub exception
+
+### Changed
+
+- README: Flathub is used only for the GNOME runtime and SDK of the Ghostty
+  build. Other applications stay RPM packages. The owner confirmed this
+  exception; the decision is in 000-0-dotfiles.
+
 ## [2026-10-11] — Core repository for Ghostty on RHEL 10
 
 ### Changed
