@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026-10-11] — Agent pointer files and website artifact intent
+
+### Changed
+
+- `CLAUDE.md` and `GEMINI.md` are regular pointer files to `AGENTS.md`, not
+  symlinks.
+- Added `docs/website-artifact-intent.md` and
+  `docs/website-artifact-remediation.md`. They do not change the
+  configuration.
+
 ## [2026-10-11] — bash snippet renamed for ble.sh
 
 ### Changed

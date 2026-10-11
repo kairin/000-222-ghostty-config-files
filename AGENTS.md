@@ -1,6 +1,6 @@
 # 000-0-ghostty — AI Agent Guidelines
 
-Single source of truth for AI agents in this repository. If `CLAUDE.md` or `GEMINI.md` exists, it points to this file.
+Single source of truth for AI agents in this repository. `CLAUDE.md` and `GEMINI.md` are regular pointer files to this file, not symlinks. Do not edit them. Update instructions here only. See `~/Apps/000-0-workspace/docs/agent-instruction-files.md`.
 
 ## Security and secrets
 
