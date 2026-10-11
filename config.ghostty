@@ -8,7 +8,7 @@
 
 # SHELL INTEGRATION
 # The Flatpak cannot inject its bash integration into the host shell.
-# bashrc.d/ghostty.bash in this repository sources it instead; these
+# bashrc.d/90-ghostty.sh in this repository sources it instead; these
 # features apply once it is loaded.
 shell-integration = detect
 shell-integration-features = sudo,title,ssh-env

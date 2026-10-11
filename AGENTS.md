@@ -33,8 +33,8 @@ the README of this repository if a fact here changes.
 
 - `config.ghostty`: the Ghostty configuration. Installed to
   `~/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty`.
-- `bashrc.d/ghostty.bash`: loads Ghostty's bash integration on the host.
-  Installed to `~/.bashrc.d/ghostty.bash`.
+- `bashrc.d/90-ghostty.sh`: loads Ghostty's bash integration on the host.
+  Installed to `~/.bashrc.d/90-ghostty.sh`.
 
 ## Rules for config.ghostty
 
@@ -44,7 +44,9 @@ the README of this repository if a fact here changes.
 - Use a font that `fc-list : family | grep 'Nerd Font Mono'` shows. The font
   must match `000-0-dotfiles/docs/nerd-fonts.md`.
 - Ghostty in the Flatpak cannot inject shell integration. Keep
-  `bashrc.d/ghostty.bash` when you change `shell-integration-features`.
+  `bashrc.d/90-ghostty.sh` when you change `shell-integration-features`.
+- Keep the `90-` prefix. The snippet must load before
+  `~/.bashrc.d/99-blesh-attach.sh` (000-0-dotfiles).
 
 ## Development workflow
 
@@ -52,7 +54,7 @@ Check both files before you commit:
 
 ```bash
 flatpak run com.mitchellh.ghostty +validate-config --config-file="$PWD/config.ghostty"
-bash -n bashrc.d/ghostty.bash
+bash -n bashrc.d/90-ghostty.sh
 ```
 
 The first command must exit 0 with no output. The Flatpak can read files in
