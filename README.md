@@ -1,136 +1,158 @@
-# ghostty-config-files
+# 000-0-ghostty
 
-Ghostty terminal config for a Fish + Nushell + AI coding workflow on Ubuntu.
-Uses tmux inside Ghostty for a scripted dev workspace.
+<!-- key-information:start -->
+## Key information
 
-## Platform status (2026-10-07)
+- **Description:** Runs the Ghostty terminal on RHEL 10 as a Flatpak built from the signed release, with bash integration and the current configuration.
+- **Tier:** `0`. Core. Every project must follow its rules, with no exceptions.
+- **Needs:** The `update` command from 000-0-ai, Flatpak, and the Nerd Fonts and bash setup from 000-0-dotfiles.
+- **Gives:** The Ghostty terminal with current GTK and libadwaita, and its configuration.
+- **On a new computer:** set it up step 7 of 7 in the core tier.
 
-This repository is for **Ubuntu**. It is not the primary setup any more.
+This folder is part of the `~/Apps` SOP (Standard Operating Procedure). The
+number in the name of each folder is its tier. The SOP map is at
+<https://claude.ai/artifact/W1ajTT5RGF5ZmKuJ4cRAwa>. It is a private claude.ai page. Log in to open it.
 
-- The primary OS is now **RHEL 10.2** with the **Ptyxis** terminal. Ghostty is not packaged for RHEL 10 or EPEL 10, and `scripts/install.sh` uses `apt-get`. Do not run it on RHEL.
-- For RHEL, follow the owner's computer-setup notes. Fonts: 10 Nerd Fonts in `~/.local/share/fonts/NerdFonts/`, default `JetBrainsMono Nerd Font Mono`.
-- The owner's dotfiles no longer have a Ghostty config. This repository has the only Ghostty config.
-- `font-picker` works only in Ghostty: it reloads Ghostty with `SIGUSR2`. In Ptyxis, use `gsettings set org.gnome.Ptyxis font-name '<name> <size>'`.
-- In a terminal, use a `Nerd Font Mono` name. `configs/ghostty/config` uses `JetBrainsMono Nerd Font` (not Mono), so some icons can be wider than one cell.
-- RHEL package names, if you use parts of this repository on RHEL: `tmux` is in the RHEL repositories (3.3a). `fish` is in EPEL 10. `zoxide` and `starship` are not packaged; use their upstream install scripts.
+| Folder | Tier | Goal | GitHub |
+|---|---|---|---|
+| `000-0-dotfiles` | 0 | Every computer works the same way | [000-0-dotfiles](https://github.com/kairin/000-0-dotfiles) |
+| `000-0-ASD-STE100` | 0 | Every document is clear to a reader who is not a developer | [000-0-ASD-STE100](https://github.com/kairin/000-0-ASD-STE100) |
+| `000-0-password` | 0 | No key gets to a program that does not need it | [000-0-password](https://github.com/kairin/000-0-password) |
+| `000-0-ai` | 0 | AI tools work the same way on every computer and follow the SOP | [000-0-ai](https://github.com/kairin/000-0-ai) |
+| `000-0-workspace` | 0 | All repositories in `~/Apps` stay healthy and consistent | [000-0-workspace](https://github.com/kairin/000-0-workspace) |
+| `000-0-tables` | 0 | You never research the same database question twice, and what you know links across repositories | [000-0-tables](https://github.com/kairin/000-0-tables) |
+| **000-0-ghostty** | 0 | The terminal is current, verified and the same on every computer | [000-0-ghostty](https://github.com/kairin/000-0-ghostty) |
+| `000-111-learn` | 111 | Write very small, fast programs that run close to the hardware | [000-111-learn](https://github.com/kairin/000-111-learn) |
+<!-- key-information:end -->
 
-## What's included
+This repository holds the Ghostty configuration and the facts about how
+Ghostty is installed. It has no install script. The command that installs and
+updates Ghostty is in 000-0-ai.
 
-- `configs/ghostty/config` — single consolidated Ghostty config (Catppuccin Mocha, 80% opacity, no blur)
-- `configs/ghostty/catppuccin-mocha.conf` — Mocha palette reference (not deployed to `~/.config/ghostty/`)
-- `configs/tmux/tmux.conf` — minimal tmux config (window hint status bar, Mocha pane borders, mouse on)
-- `configs/fish/config.fish` — fish interactive env: PATH, fnm, bun, uv/gum/glow completions, fzf, zoxide (`z`), starship, and a `~/.mcp-secrets` parser
-- `configs/starship/starship.toml` — Catppuccin Mocha prompt (replaces powerlevel10k)
-- `configs/fish/functions/` — tab-title engine: `🌐 <label> 📁 <path> <icon> <cmd>` (host shown only over SSH; `<label>` from machine-local `~/.host-label`, e.g. `DGX`). The per-command emoji is derived from the command's apt `Section` (cached per session, small override list for non-apt tools)
-- `scripts/dev.fish` — fish function: `dev` toggles the `og-tools` tmux session (`claude`/`codex`/`agy`, rooted in `~/Apps/OG-tools`)
-- `scripts/font-picker.fish` — fish function to pick a Nerd Font via zenity with live reload
-- `scripts/install.sh` — deploys all configs, installs fish functions, and sets up the fish shell env (`--no-shell` skips the shell setup)
-- `scripts/uninstall.sh` — reverses install, restores backup
+## Contents
 
-## Setup
+| Path | What it is | Install location |
+|---|---|---|
+| `config.ghostty` | The Ghostty configuration: font, Catppuccin Mocha theme, window, clipboard and keybinds. | `~/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty` |
+| `bashrc.d/90-ghostty.sh` | Loads Ghostty's bash integration in the host shell. It loads after the other `~/.bashrc.d` tools and before ble.sh attaches (`99-blesh-attach.sh`). | `~/.bashrc.d/90-ghostty.sh` |
 
-```bash
-sudo apt install tmux
-git clone https://github.com/kairin/ghostty-config-files.git ~/Apps/ghostty-config-files
-cd ~/Apps/ghostty-config-files
-./scripts/install.sh
-```
+## Where each part lives
 
-`install.sh` deploys the Ghostty/tmux/fish configs and sets up the fish shell environment:
-it installs **fish** + **zoxide** (`sudo apt`) and **starship** (userspace `~/.local/bin`),
-symlinks `config.fish`/`starship.toml` into `~/.config`, and offers to `chsh` to fish.
-It is idempotent and degrades gracefully without sudo (it warns instead of failing).
-Pass `--no-shell` to deploy only the Ghostty/tmux configs. Re-run with `--force` to
-overwrite an existing Ghostty config (a timestamped backup is made).
+| Part | Repository | Path |
+|---|---|---|
+| Install and update command (`update`) | [000-0-ai](https://github.com/kairin/000-0-ai) | `local-bin/update`, installed by `local-bin/install-update.py`. Documentation: README section "Update command" and its "Ghostty" subsection. |
+| Agent skill and Claude prompt hook for updates | [000-0-ai](https://github.com/kairin/000-0-ai) | `skills/update/SKILL.md`, `hooks/claude/update_reminder.py` |
+| Nerd Fonts | [000-0-dotfiles](https://github.com/kairin/000-0-dotfiles) | `docs/nerd-fonts.md` |
+| Bash setup and `~/.bashrc.d` (ble.sh, Starship, atuin, fzf, zoxide, direnv) | [000-0-dotfiles](https://github.com/kairin/000-0-dotfiles) | `docs/configuration-reference.md` (section bash), `docs/rhel-10-setup.md` |
+| Routine maintenance (run `update`) | [000-0-workspace](https://github.com/kairin/000-0-workspace) | README section "AI harness maintenance" |
+| Ghostty configuration | This repository | `config.ghostty`, `bashrc.d/90-ghostty.sh` |
 
-### Shell environment & secrets
+## Why a Flatpak
 
-`config.fish` is symlinked into `~/.config/fish/`, so `git pull` keeps every machine in sync.
-It loads `~/.mcp-secrets` if present — a **machine-local**, bash-syntax (`export KEY=VALUE`)
-file synced out-of-band and **never committed** to this repo (fish parses its `export`
-lines natively). After install, set fish as your login shell and re-login:
+Ghostty is not in the RHEL 10 or EPEL 10 repositories. A native build works,
+but RHEL 10 has older GTK and libadwaita than Ghostty can use:
 
-```bash
-chsh -s "$(command -v fish)"
-```
+| Library | RHEL 10 | GNOME 49 Flatpak runtime | Newest Ghostty use |
+|---|---|---|---|
+| GTK | 4.16 | 4.20 | 4.20 |
+| libadwaita | 1.6 | 1.8 | 1.8 |
 
-## Daily workflow
+GTK 4.20 needs glib 2.82 and pango 1.56. RHEL 10 has glib 2.80 and pango 1.54.
+A native GTK 4.20 means you build glib, pango and GTK yourself. The Flatpak
+gets them from the GNOME runtime instead. The build uses Ghostty's own
+manifest, `flatpak/com.mitchellh.ghostty.yml`, from the release source.
 
-Open Ghostty and type:
+A native build also needs Zig at the exact version that the Ghostty release
+names (0.15.2 for 1.3.x). EPEL has a different version. The Flatpak manifest
+downloads the correct Zig, so you do not install Zig.
 
-```
-dev
-```
+## Install on a new computer
 
-`dev` is a **toggle**:
+Do the steps for 000-0-dotfiles (Nerd Fonts, bash) and 000-0-ai (`update`)
+first.
 
-- First `dev` (in a plain terminal) builds the session and attaches.
-- `dev` again while attached **detaches** — the panes keep running in the background and you drop back to the normal terminal.
-- `dev` once more **reattaches** to the same session, exactly as you left it.
-- `dev reset` tears the session down and rebuilds it fresh (new `claude`/`codex`/`agy`).
+1. Install the build tools and add the Flathub remote:
 
-It launches tmux inside Ghostty and creates the `og-tools` session (all panes rooted in `~/Apps/OG-tools`):
+   ```bash
+   sudo dnf install flatpak-builder minisign
+   flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+   ```
 
-```
-tmux session: og-tools
+   `flatpak` is in RHEL 10. `flatpak-builder` is in AppStream and `minisign`
+   is in EPEL.
 
-1:claude
-┌────────────────────────────────────────┬────────────────────┐
-│ claude                                 │ fish               │
-└────────────────────────────────────────┴────────────────────┘
+   Flathub is used only for the GNOME runtime and SDK of this build. This is
+   the one exception to the "no Flathub" rule. Other applications stay RPM
+   packages. See `docs/decisions.md` in 000-0-dotfiles, entry 2026-10-11.
 
-2:codex
-┌─────────────────────────────────────────────────────────────┐
-│ codex                                                       │
-└─────────────────────────────────────────────────────────────┘
+2. Build and install Ghostty:
 
-3:agy
-┌─────────────────────────────────────────────────────────────┐
-│ agy                                                         │
-└─────────────────────────────────────────────────────────────┘
-```
+   ```bash
+   update --only ghostty
+   ```
 
-| Action | How |
-|--------|-----|
-| Launch / reattach dev workspace | `dev` |
-| Detach (hide) dev workspace | `dev` again while attached |
-| Rebuild dev workspace from scratch | `dev reset` |
-| Navigate splits | mouse click or tmux prefix + arrow |
-| List tmux windows | tmux prefix + `w` |
-| Switch tmux windows | tmux prefix + `1`, `2`, or `3` |
-| Pick a different font | `font-picker` (zenity list) |
-| Reload Ghostty config | `ctrl+shift+,` or `pkill -SIGUSR2 ghostty` |
-| New Ghostty tab | `ctrl+shift+t` |
+   The command downloads the newest release, checks its minisign signature,
+   builds it and installs it as the user Flatpak `com.mitchellh.ghostty`.
+   The first build also installs the GNOME runtime and SDK (about 2 GB) and
+   takes several minutes. Expect: `ghostty: okay (updated none -> X.Y.Z; ...)`.
 
-## How it works
+3. Install the configuration from this repository:
 
-tmux runs inside Ghostty as a process. Ghostty handles the window/tabs/opacity;
-tmux handles the splits and scripted layout. The status bar shows window switching hints,
-and pane borders use Catppuccin Mocha surface colors so it looks clean.
+   ```bash
+   mkdir -p ~/.var/app/com.mitchellh.ghostty/config/ghostty ~/.bashrc.d
+   cp config.ghostty ~/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty
+   cp bashrc.d/90-ghostty.sh ~/.bashrc.d/90-ghostty.sh
+   ```
 
-## Installed Nerd Fonts
+4. Check the configuration:
 
-Run `font-picker` to see the live list — it reads `fc-list` directly. On this machine the base families are FiraCode, Hack, JetBrainsMono, JetBrainsMonoNL, MesloLGL, MesloLGLDZ, MesloLGM, MesloLGMDZ, MesloLGS, MesloLGSDZ (each also offered as 'Nerd Font Mono' and 'Nerd Font Propo' variants).
+   ```bash
+   flatpak run com.mitchellh.ghostty +validate-config
+   ```
 
-## Validate config
+   Expect: no output and exit code 0.
 
-```bash
-ghostty +validate-config --config-file=configs/ghostty/config
-```
+5. Start Ghostty from the application menu, or run
+   `flatpak run com.mitchellh.ghostty`.
 
-Expected: clean exit (0), no errors.
+## Update
 
-## tmux version
+Run `update` (all tools) or `update --only ghostty`. The command compares the
+installed Flatpak with the newest `vX.Y.Z` tag of `ghostty-org/ghostty`. If
+Ghostty is missing or older, it builds and installs the new release in place,
+checks that it starts, and removes the build files and unused Flatpak
+runtimes. Restart Ghostty to use the new version. `flatpak update` does not
+update Ghostty, because it is a local build.
 
-The apt package (`sudo apt install tmux`) provides **3.6a**. The latest GitHub release is **3.6b** (bugfix update). To install 3.6b from source:
+## Facts about the Flatpak
 
-```bash
-sudo apt install libevent-dev bison build-essential
-cd /tmp
-wget https://github.com/tmux/tmux/releases/download/3.6b/tmux-3.6b.tar.gz
-tar xzf tmux-3.6b.tar.gz && cd tmux-3.6b
-./configure --prefix=/usr/local && make -j$(nproc) && sudo make install
-tmux -V   # should print: tmux 3.6b
-```
+- **Configuration folder.** Inside the Flatpak, `XDG_CONFIG_HOME` is
+  `~/.var/app/com.mitchellh.ghostty/config`. Ghostty does not read
+  `~/.config/ghostty`. Ghostty 1.3 uses the file name `config.ghostty`.
+- **Shell.** Ghostty starts your login shell on the host, not in the sandbox.
+- **Bash integration.** Ghostty cannot inject its bash integration from the
+  Flatpak, because the sandbox cannot open the Flatpak install folder. It
+  logs `shell could not be detected`. `bashrc.d/90-ghostty.sh` sources the
+  same file from the host. This turns on the `sudo`, `ssh-env` and `title`
+  features in `config.ghostty`. The file name starts with `90-` so that it
+  loads before ble.sh attaches. Tested on 2026-10-11 with ble.sh, Starship
+  and atuin: all Ghostty hooks are active.
+- **TERM.** Ghostty sets `TERM=xterm-ghostty` and points `TERMINFO` to a host
+  path in the Flatpak install. Programs on the host find it, so no `terminfo`
+  install is needed.
+- **Home folder.** The Flatpak can read your home folder but cannot write to
+  it. Programs that you run in the terminal run on the host and are not
+  limited.
 
-Either version works with this config.
+## Change the configuration
+
+1. Edit `config.ghostty` in this repository.
+2. Copy it to the install location (step 3 above).
+3. Run `flatpak run com.mitchellh.ghostty +validate-config`.
+4. Press `Ctrl+Shift+,` in Ghostty to reload the file.
+
+Rules for the file:
+
+- Do not add `background-blur`. It causes crashes on Linux.
+- Keep `scrollback-limit` at 50000 or lower.
+- Use a font that `fc-list : family | grep 'Nerd Font Mono'` shows.

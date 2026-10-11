@@ -1,47 +1,57 @@
 # Changelog
 
-## 2026-10-11 Website artifact intent
-
-- Added docs/website-artifact-intent.md with the current implementation, adoption tasks, source authority and acceptance checks.
-- This proposal does not change application code, dependencies, data or publishing.
-
-## [2026-09-13] — GitHub delivery cleanup
+## [2026-10-11] — Agent pointer files and website artifact intent
 
 ### Changed
 
-- Reviewed GitHub delivery configuration for this repository.
-- Added minimal protection to the default branch. Direct commits and pushes remain allowed; pull requests, reviews, status checks, and agent approvals are not required.
-- Preserved project-specific validation and intentional publishing workflows.
+- `CLAUDE.md` and `GEMINI.md` are regular pointer files to `AGENTS.md`, not
+  symlinks.
+- Added `docs/website-artifact-intent.md` and
+  `docs/website-artifact-remediation.md`. They do not change the
+  configuration.
 
-All notable changes to this project will be documented in this file.
+## [2026-10-11] — bash snippet renamed for ble.sh
 
-## [Unreleased]
+### Changed
+
+- Renamed `bashrc.d/ghostty.bash` to `bashrc.d/90-ghostty.sh`. bash replaces
+  fish (000-0-dotfiles), and ble.sh attaches in `99-blesh-attach.sh`. The
+  Ghostty snippet must load before that. Install it as
+  `~/.bashrc.d/90-ghostty.sh` and remove the old `~/.bashrc.d/ghostty.bash`.
+
+## [2026-10-11] — Flathub exception
+
+### Changed
+
+- README: Flathub is used only for the GNOME runtime and SDK of the Ghostty
+  build. Other applications stay RPM packages. The owner confirmed this
+  exception; the decision is in 000-0-dotfiles.
+
+## [2026-10-11] — Core repository for Ghostty on RHEL 10
+
+### Changed
+
+- Renamed the repository from `000-222-ghostty-config-files` to
+  `000-0-ghostty` and moved it to the core tier.
+- Replaced the Ubuntu setup with the RHEL 10 setup. Ghostty is now the user
+  Flatpak `com.mitchellh.ghostty`, built from the signed release with
+  Ghostty's own manifest. The `update` command in 000-0-ai installs and
+  rebuilds it.
+- `config.ghostty`: the configuration for Ghostty 1.3 in the Flatpak. It uses
+  the built-in `Catppuccin Mocha` theme and the `JetBrainsMono Nerd Font Mono`
+  font from 000-0-dotfiles.
 
 ### Added
-- Tab-title engine (`configs/fish/functions/`): `fish_title` shows `🌐 <label> 📁 <path> <icon> <cmd>` — host/label shown only over SSH (`<label>` from machine-local `~/.host-label`, e.g. "DGX", seeded from hostname by install.sh). The per-command emoji is derived **systematically from the command's apt `Section`** (`__app_icon` → `dpkg -S` → `${Section}` → `__app_section_icon`), cached per session with a small override list for non-apt tools; default `⚡`. Single-codepoint emoji only so GTK/AppKit tab labels render them. install.sh symlinks the functions; uninstall.sh removes them.
-- `.gitignore` now also excludes `.envrc` (machine-local direnv bootstrap that sources the gitignored `.envrc.local`) so it can't be committed by accident.
-- Fish shell environment captured in the repo for reproducible multi-machine setup: `configs/fish/config.fish` (PATH, fnm, bun, uv/gum/glow completions, fzf, zoxide `z`, starship, and a parser for the machine-local bash-syntax `~/.mcp-secrets`) and `configs/starship/starship.toml` (Catppuccin Mocha prompt, replacing the old powerlevel10k zsh setup).
-- `install.sh` now sets up the fish shell env: installs fish + zoxide (`sudo apt`) and starship (userspace `~/.local/bin`), symlinks `config.fish`/`starship.toml` into `~/.config`, and offers `chsh` to fish. Idempotent and tolerant of no-sudo / non-interactive runs. `--no-shell` skips it; `uninstall.sh` removes the new symlinks (apt/starship/chsh left in place).
 
-### Changed
-- `dev.fish` now manages the `og-tools` session (windows `claude`, `codex`, `agy`, rooted in `~/Apps/OG-tools`) and is a toggle: outside tmux it attaches (creating the session if needed), inside tmux it detaches so panes keep running in the background. Added `dev reset` to force a fresh rebuild. Repo file, live `~/.config/fish/functions/dev.fish` symlink, and docs reconciled — the live file had drifted to a detached standalone copy.
+- `bashrc.d/ghostty.bash`: loads Ghostty's bash integration on the host,
+  because the Flatpak cannot inject it.
 
-### Fixed
-- `clipboard-trim-trailing-spaces` set to `false` — was silently dropping the last character when copied text ended with a space (nushell output, etc.)
+### Removed
 
-## [2026-05-31]
+- The install and uninstall scripts, the font picker, the `dev` tmux
+  function, and the fish, tmux and starship configuration. The shell is bash
+  (000-0-dotfiles). The install command is in 000-0-ai.
+- The old `.gitignore` rules for projects that are no longer in this
+  repository.
 
-### Fixed
-- tmux: enable `set-clipboard on` for system clipboard pass-through via OSC 52 (#242)
-
-### Added
-- tmux dev layout via `dev.fish` — launches claude (left) + nushell (right) split (#240)
-
-### Changed
-- `.envrc.local` added to `.gitignore` to avoid committing local PAT overrides (#241)
-- Docs aligned across CLAUDE.md / AGENTS.md / GEMINI.md after Opus review (#243)
-
-## [2026-05-28]
-
-### Changed
-- Clean rebuild: single consolidated Ghostty config (no modular includes), font-picker script, install/uninstall scripts (#239)
+Earlier history is in Git (`git log`).

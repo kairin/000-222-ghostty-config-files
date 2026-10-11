@@ -2,15 +2,15 @@
 
 Status: proposed adoption plan. Assessment date: 2026-10-11.
 
-This plan covers `000-222-ghostty-config-files`. It does not change the current application, data, dependencies, or publishing rules.
+This plan covers `000-0-ghostty`. It does not change the current application, data, dependencies, or publishing rules.
 
 ## Current implementation
 
-Ubuntu terminal configuration.
+Ghostty terminal configuration for RHEL 10 (user Flatpak `com.mitchellh.ghostty`).
 
 Strength: Explicit platform limits.
 
-Weakness or limit: Manual reference, Ubuntu-specific installer.
+Weakness or limit: Manual reference. The installer and rebuild live in `000-0-ai`, not here.
 
 Evidence below establishes the documented implementation. No runtime performance comparison was completed. Where evidence is incomplete, the first task resolves that gap.
 
@@ -18,7 +18,7 @@ Evidence below establishes the documented implementation. No runtime performance
 
 A configuration reference for supported platforms.
 
-Adoption route: **Catalog**. Generate a reference only if useful, never execute the installer to build it.
+Adoption route: **Catalog**. Generate a reference only if useful, never run the `update` command to build it.
 
 Proposed artifact input: Reviewed configuration documentation. The artifact consumes a read-only snapshot. Canonical authority remains with the originals, ledgers and application stores defined in AGENTS.md. Derived views do not become authoritative records.
 
@@ -33,7 +33,7 @@ Use JSON declarations and build records first. Add a rebuildable SQLite catalog 
 ## Project tasks
 
 1. Record the exact entrypoint, reader task, source authority, output mode and existing validation commands.
-2. Generate a reference only if useful, never execute the installer to build it.
+2. Generate a reference only if useful, never run the `update` command to build it.
 3. Add contract metadata and output checks after the two-project pilot proves reuse.
 4. Check source hashes, record parity, escaping, links and audience filtering against a stable input snapshot.
 5. Measure build time, output bytes and browser readiness before adopting shared components.

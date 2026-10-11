@@ -1,60 +1,80 @@
-# ghostty-config-files — Agent Instructions
+# 000-0-ghostty — AI Agent Guidelines
 
-This is a minimal Ghostty terminal config repo. Keep it simple.
+Single source of truth for AI agents in this repository. `CLAUDE.md` and `GEMINI.md` are regular pointer files to this file, not symlinks. Do not edit them. Update instructions here only. See `~/Apps/000-0-workspace/docs/agent-instruction-files.md`.
 
-## What this repo contains
+## Security and secrets
 
-- `configs/ghostty/config` — single Ghostty config file (no modular split)
-- `configs/tmux/tmux.conf` — minimal tmux config (window hint status bar, Mocha pane borders, mouse on)
-- `configs/fish/config.fish` — fish interactive env (PATH, fnm, bun, uv/gum/glow completions, fzf, zoxide, starship, mcp-secrets shim)
-- `configs/starship/starship.toml` — Catppuccin Mocha prompt (replaces the old powerlevel10k zsh prompt)
-- `configs/fish/functions/` — tab-title engine: `fish_title.fish` shows `🌐 <label> 📁 <path> <icon> <cmd>` (host shown only over SSH; `<label>` from machine-local `~/.host-label`, e.g. "DGX"). `__app_icon.fish` derives the per-command emoji from the command's apt `Section` (cached per session, small override list for non-apt tools); `__app_section_icon.fish` is the Section→emoji map. Single-codepoint emoji only (GTK tab labels can't render VS16/Nerd glyphs).
-- `scripts/font-picker.fish` — fish font picker function
-- `scripts/dev.fish` — fish function that toggles the `og-tools` tmux session (`claude`, `codex`, `agy`; rooted in `~/Apps/OG-tools`)
-- `scripts/install.sh` / `uninstall.sh` — deploy/remove scripts (install.sh also sets up the fish shell env; `--no-shell` skips that)
-- `configs/ghostty/catppuccin-mocha.conf` — Mocha palette reference (not deployed)
+- Never expose, print, log, commit, or include in diffs, prompts, fixtures, screenshots, or generated files any API key, token, password, credential, private key, session cookie, or other secret. Redact with `<REDACTED>`.
+- Never ask the user to paste a secret into chat. Do not read or display secret-file contents. If a credential is missing, stop and explain how to provide it securely.
+- Secrets live in the owner's `pass` password store. A command gets a secret only through `with-secret <service>/<name> -- <command>`. Never put a secret in `.env`, `.envrc`, `.envrc.local`, source code, config or documentation.
+- Do not send personal or sensitive data to an external service unless the user explicitly authorizes it.
+- This repository is public. Do not add local absolute paths (use `~`), personal email addresses or phone numbers.
 
-## Rules
+## Project overview
 
-- Do NOT split the Ghostty config back into modular files.
-- Keep EXACTLY ONE unquoted `font-family =` line in `configs/ghostty/config`. font-picker.fish replaces it via `sed` on `^font-family`; a second line or a quoted value breaks font selection.
-- Do NOT add blur (`background-blur`) — it crashes Ghostty on Linux.
-- Do NOT set `scrollback-limit` above 50000.
-- Do NOT add `config-reload-on-focus-in` — it is not a valid Ghostty 1.3.1 option and fails validation.
-- Do NOT create new `.sh` scripts; extend install.sh / uninstall.sh instead.
-- `configs/fish/config.fish` and `configs/starship/starship.toml` are SYMLINKED into `~/.config` by install.sh (like the tmux/fish-function symlinks) so `git pull` propagates updates. Never store secrets in them.
-- NEVER put secrets in the repo. `~/.mcp-secrets` is bash-syntax, machine-local, synced out-of-band; config.fish only parses it at startup.
-- NEVER commit directly to main — use a timestamped branch `YYYYMMDD-HHMMSS-description`.
-- `CLAUDE.md` and `GEMINI.md` are regular pointer files to this file, not symlinks. Do not edit them. Update instructions here only. See `~/Apps/000-0-workspace/docs/agent-instruction-files.md`.
+This repository holds the Ghostty terminal configuration for RHEL 10 and the
+facts about how Ghostty is installed. Ghostty is the user Flatpak
+`com.mitchellh.ghostty`, built from the signed release with Ghostty's own
+Flatpak manifest. The README explains why.
 
-## Validate before committing
+This repository has no install script, hook or skill. Do not add them here.
+They are in other core repositories:
+
+| Part | Repository |
+|---|---|
+| `update` command that installs and rebuilds Ghostty, its installer, skill, Claude hook and tests | `000-0-ai` (`local-bin/update`, `local-bin/install-update.py`, `skills/update/`, `hooks/claude/update_reminder.py`, `tests/test_update.py`) |
+| Nerd Fonts, bash and `~/.bashrc.d` setup | `000-0-dotfiles` |
+| Routine maintenance | `000-0-workspace` |
+
+A change to how Ghostty is built or updated goes into `000-0-ai`. Then update
+the README of this repository if a fact here changes.
+
+## Contents
+
+- `config.ghostty`: the Ghostty configuration. Installed to
+  `~/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty`.
+- `bashrc.d/90-ghostty.sh`: loads Ghostty's bash integration on the host.
+  Installed to `~/.bashrc.d/90-ghostty.sh`.
+
+## Rules for config.ghostty
+
+- Keep one file. Do not split it into included files.
+- Do not add `background-blur`. It causes crashes on Linux.
+- Keep `scrollback-limit` at 50000 or lower.
+- Use a font that `fc-list : family | grep 'Nerd Font Mono'` shows. The font
+  must match `000-0-dotfiles/docs/nerd-fonts.md`.
+- Ghostty in the Flatpak cannot inject shell integration. Keep
+  `bashrc.d/90-ghostty.sh` when you change `shell-integration-features`.
+- Keep the `90-` prefix. The snippet must load before
+  `~/.bashrc.d/99-blesh-attach.sh` (000-0-dotfiles).
+
+## Development workflow
+
+Check both files before you commit:
 
 ```bash
-ghostty +validate-config --config-file=configs/ghostty/config   # must exit 0
-shellcheck scripts/install.sh scripts/uninstall.sh
+flatpak run com.mitchellh.ghostty +validate-config --config-file="$PWD/config.ghostty"
+bash -n bashrc.d/90-ghostty.sh
 ```
 
-shellcheck applies only to the `.sh` scripts; the `.fish` files (`config.fish`, `font-picker.fish`, `dev.fish`, and `configs/fish/functions/*.fish`) are not shellcheck-compatible — sanity-check them with `fish --no-execute <file>` instead.
+The first command must exit 0 with no output. The Flatpak can read files in
+the home folder, so the repository must be in the home folder.
 
-## User context
+Then run the shared local baseline from
+`000-0-workspace/docs/project-quality-checks.md`.
 
-- Shell: fish (primary), nushell (secondary). No zsh. Prompt: starship (Catppuccin Mocha), replacing the old powerlevel10k zsh setup.
-- Shell env lives in `configs/fish/config.fish`: PATH (`~/.local/bin`, `~/.bun/bin`), `fnm --use-on-cd`, bun, uv/gum/glow completions, fzf, zoxide (`z`), starship, and a parser for the machine-local bash-syntax `~/.mcp-secrets`.
-- `install.sh` installs fish + zoxide (apt) and starship (userspace `~/.local/bin`), then offers `chsh` to fish. Tolerant of no-sudo / non-interactive runs (warns, never hangs).
-- Terminal: Ghostty 1.3.1 on Ubuntu 26.04.
-- Platform status (2026-10-07): the primary OS is now RHEL 10.2 with Ptyxis. This repository is Ubuntu-only (`install.sh` uses apt; Ghostty is not packaged for RHEL). See README "Platform status".
-- tmux dev session `og-tools` (rooted in `~/Apps/OG-tools`): `claude` window has `claude` left and `fish` right; `codex` window runs `codex`; `agy` window runs `agy`.
-- `dev` is a toggle: outside tmux it attaches (creating the session first if needed); inside tmux it `detach-client`s so the session keeps running in the background. `dev reset` kills the session and rebuilds it fresh.
-- Font picker: `font-picker` fish function (zenity + SIGUSR2 reload).
+A task is done only when you show evidence: command output, a log line or a screenshot.
 
-## tmux integration
+## Branches and pull requests
 
-- `configs/tmux/tmux.conf` — minimal tmux config for use inside Ghostty
-- `scripts/dev.fish` — fish function that toggles the `og-tools` session (rooted in `~/Apps/OG-tools`): `claude` (claude/fish split), `codex`, `agy`. Attach/detach on repeat; `dev reset` rebuilds. Run `dev reset` from outside tmux or a status-bar `run-shell` binding — not from a pane inside the session it is killing.
-- tmux is installed via `sudo apt install tmux` (not managed by this repo)
-- Status bar is intentionally minimal and shows window-switching hints.
-- Pane borders use Catppuccin Mocha surface0 (#313244) and mauve (#cba6f7)
-- Do NOT configure tmux splits inside Ghostty native splits — choose one layer only
+- Follow the `commit-push-merge` skill. Branch names are `YYYYMMDD-HHMMSS-short-name`. Never delete a branch.
+- Never push to `main` directly. Make a branch, push it, and open a pull request.
+- Keep `CHANGELOG.md` up to date.
+
+## Documentation
+
+- `README.md`: for users.
+- `AGENTS.md` (this file): for agents. Update it when a tool, a command or a rule changes.
 
 ## Git identity
 

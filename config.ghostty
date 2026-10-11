@@ -1,0 +1,45 @@
+# Ghostty configuration for RHEL 10 with bash (Flatpak com.mitchellh.ghostty).
+# Location: ~/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty
+# Reload after edits: ctrl+shift+, (built-in reload_config keybind).
+# Check this file:
+#   flatpak run com.mitchellh.ghostty +validate-config \
+#     --config-file=$HOME/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty
+# List all options: flatpak run com.mitchellh.ghostty +show-config --default --docs
+
+# SHELL INTEGRATION
+# The Flatpak cannot inject its bash integration into the host shell.
+# bashrc.d/90-ghostty.sh in this repository sources it instead; these
+# features apply once it is loaded.
+shell-integration = detect
+shell-integration-features = sudo,title,ssh-env
+
+# FONT - same Nerd Font as Ptyxis (see 000-0-dotfiles docs/nerd-fonts.md).
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 14
+
+# APPEARANCE - Catppuccin Mocha (built-in theme), 80% opacity.
+theme = Catppuccin Mocha
+background-opacity = 0.8
+cursor-style = block
+cursor-style-blink = true
+
+scrollback-limit = 10000
+
+window-padding-x = 12
+window-padding-y = 12
+window-padding-balance = true
+window-decoration = auto
+gtk-tabs-location = top
+window-new-tab-position = end
+
+clipboard-trim-trailing-spaces = false
+clipboard-paste-protection = true
+copy-on-select = clipboard
+
+# KEYBINDS - ctrl+alt+d splits right; ctrl+alt+left/right moves between splits.
+keybind = ctrl+alt+d=new_split:right
+keybind = ctrl+alt+left=goto_split:left
+keybind = ctrl+alt+right=goto_split:right
+keybind = ctrl+shift+t=new_tab
+# shift+enter inserts a newline in Claude Code and similar prompts.
+keybind = shift+enter=text:\x1b\r
