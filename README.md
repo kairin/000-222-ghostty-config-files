@@ -81,6 +81,10 @@ first.
    `flatpak` is in RHEL 10. `flatpak-builder` is in AppStream and `minisign`
    is in EPEL.
 
+   Flathub is used only for the GNOME runtime and SDK of this build. This is
+   the one exception to the "no Flathub" rule. Other applications stay RPM
+   packages. See `docs/decisions.md` in 000-0-dotfiles, entry 2026-10-11.
+
 2. Build and install Ghostty:
 
    ```bash
