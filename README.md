@@ -34,7 +34,7 @@ updates Ghostty is in 000-0-ai.
 | Path | What it is | Install location |
 |---|---|---|
 | `config.ghostty` | The Ghostty configuration: font, Catppuccin Mocha theme, window, clipboard and keybinds. | `~/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty` |
-| `bashrc.d/ghostty.bash` | Loads Ghostty's bash integration in the host shell. | `~/.bashrc.d/ghostty.bash` |
+| `bashrc.d/90-ghostty.sh` | Loads Ghostty's bash integration in the host shell. It loads after the other `~/.bashrc.d` tools and before ble.sh attaches (`99-blesh-attach.sh`). | `~/.bashrc.d/90-ghostty.sh` |
 
 ## Where each part lives
 
@@ -43,9 +43,9 @@ updates Ghostty is in 000-0-ai.
 | Install and update command (`update`) | [000-0-ai](https://github.com/kairin/000-0-ai) | `local-bin/update`, installed by `local-bin/install-update.py`. Documentation: README section "Update command" and its "Ghostty" subsection. |
 | Agent skill and Claude prompt hook for updates | [000-0-ai](https://github.com/kairin/000-0-ai) | `skills/update/SKILL.md`, `hooks/claude/update_reminder.py` |
 | Nerd Fonts | [000-0-dotfiles](https://github.com/kairin/000-0-dotfiles) | `docs/nerd-fonts.md` |
-| Bash setup and `~/.bashrc.d` | [000-0-dotfiles](https://github.com/kairin/000-0-dotfiles) | `docs/rhel-10-setup.md` |
+| Bash setup and `~/.bashrc.d` (ble.sh, Starship, atuin, fzf, zoxide, direnv) | [000-0-dotfiles](https://github.com/kairin/000-0-dotfiles) | `docs/configuration-reference.md` (section bash), `docs/rhel-10-setup.md` |
 | Routine maintenance (run `update`) | [000-0-workspace](https://github.com/kairin/000-0-workspace) | README section "AI harness maintenance" |
-| Ghostty configuration | This repository | `config.ghostty`, `bashrc.d/ghostty.bash` |
+| Ghostty configuration | This repository | `config.ghostty`, `bashrc.d/90-ghostty.sh` |
 
 ## Why a Flatpak
 
@@ -101,7 +101,7 @@ first.
    ```bash
    mkdir -p ~/.var/app/com.mitchellh.ghostty/config/ghostty ~/.bashrc.d
    cp config.ghostty ~/.var/app/com.mitchellh.ghostty/config/ghostty/config.ghostty
-   cp bashrc.d/ghostty.bash ~/.bashrc.d/ghostty.bash
+   cp bashrc.d/90-ghostty.sh ~/.bashrc.d/90-ghostty.sh
    ```
 
 4. Check the configuration:
@@ -132,9 +132,11 @@ update Ghostty, because it is a local build.
 - **Shell.** Ghostty starts your login shell on the host, not in the sandbox.
 - **Bash integration.** Ghostty cannot inject its bash integration from the
   Flatpak, because the sandbox cannot open the Flatpak install folder. It
-  logs `shell could not be detected`. `bashrc.d/ghostty.bash` sources the
+  logs `shell could not be detected`. `bashrc.d/90-ghostty.sh` sources the
   same file from the host. This turns on the `sudo`, `ssh-env` and `title`
-  features in `config.ghostty`.
+  features in `config.ghostty`. The file name starts with `90-` so that it
+  loads before ble.sh attaches. Tested on 2026-10-11 with ble.sh, Starship
+  and atuin: all Ghostty hooks are active.
 - **TERM.** Ghostty sets `TERM=xterm-ghostty` and points `TERMINFO` to a host
   path in the Flatpak install. Programs on the host find it, so no `terminfo`
   install is needed.

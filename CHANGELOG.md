@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026-10-11] — bash snippet renamed for ble.sh
+
+### Changed
+
+- Renamed `bashrc.d/ghostty.bash` to `bashrc.d/90-ghostty.sh`. bash replaces
+  fish (000-0-dotfiles), and ble.sh attaches in `99-blesh-attach.sh`. The
+  Ghostty snippet must load before that. Install it as
+  `~/.bashrc.d/90-ghostty.sh` and remove the old `~/.bashrc.d/ghostty.bash`.
+
 ## [2026-10-11] — Flathub exception
 
 ### Changed
