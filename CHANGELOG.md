@@ -1,4 +1,10 @@
 # Changelog
+
+## 2026-10-11 Website artifact intent
+
+- Added docs/website-artifact-intent.md with the current implementation, adoption tasks, source authority and acceptance checks.
+- This proposal does not change application code, dependencies, data or publishing.
+
 ## [2026-09-13] — GitHub delivery cleanup
 
 ### Changed

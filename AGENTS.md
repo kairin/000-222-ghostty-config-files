@@ -25,7 +25,7 @@ This is a minimal Ghostty terminal config repo. Keep it simple.
 - `configs/fish/config.fish` and `configs/starship/starship.toml` are SYMLINKED into `~/.config` by install.sh (like the tmux/fish-function symlinks) so `git pull` propagates updates. Never store secrets in them.
 - NEVER put secrets in the repo. `~/.mcp-secrets` is bash-syntax, machine-local, synced out-of-band; config.fish only parses it at startup.
 - NEVER commit directly to main — use a timestamped branch `YYYYMMDD-HHMMSS-description`.
-- Keep `CLAUDE.md` and `GEMINI.md` as symlinks to this file. Never overwrite them with regular files.
+- `CLAUDE.md` and `GEMINI.md` are regular pointer files to this file, not symlinks. Do not edit them. Update instructions here only. See `~/Apps/000-0-workspace/docs/agent-instruction-files.md`.
 
 ## Validate before committing
 
